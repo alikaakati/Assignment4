@@ -21,6 +21,8 @@ namespace Assignment4_ALI_K_MOHAMAD.N.Models
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<CheckingAccount> CheckingAccounts { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
+
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {

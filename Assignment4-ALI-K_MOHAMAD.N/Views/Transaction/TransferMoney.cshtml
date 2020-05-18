@@ -1,0 +1,19 @@
+﻿@model Assignment4_ALI_K_MOHAMAD.N.Models.Transaction
+@{
+    ViewBag.Title = "Transfer";
+}
+
+<h1>Transfer</h1>
+
+<div id="body">
+    @using (Html.BeginForm("ConfrimTransferMoney", "Transaction"))
+    {
+        <label>Amount</label>
+        @Html.TextBoxFor(m => m.Amount)
+
+        <label> To Account #</label>
+        @Html.TextBoxFor(m => m.CheckingAccountId)
+        <button type="submit" class="btn btn-primary">Transfer</button>
+    }
+</div>
+

@@ -1,0 +1,9 @@
+﻿@model List<Assignment4_ALI_K_MOHAMAD.N.Models.Transaction>
+@{
+    ViewBag.Title = "PrintStatement";
+}
+
+@foreach(var x in Model)
+{
+    @x.CheckingAccount
+}

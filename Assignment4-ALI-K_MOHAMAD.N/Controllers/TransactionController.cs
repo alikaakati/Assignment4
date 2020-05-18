@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
+using Assignment4_ALI_K_MOHAMAD.N.ListViewModel;
 
 namespace Assignment4_ALI_K_MOHAMAD.N.Controllers
 {
@@ -45,7 +47,8 @@ namespace Assignment4_ALI_K_MOHAMAD.N.Controllers
             {
                 return Content("That was a good attempt :)");
             }
-            var acc = _context.CheckingAccounts.Single(c => c.Id == 1);
+            string username = User.Identity.GetUserId();
+            var acc = _context.CheckingAccounts.Single(c => c.ApplicationUserId == username);
             acc.Balance = acc.Balance + Amount;
             _context.SaveChanges();
             return View();
@@ -56,6 +59,7 @@ namespace Assignment4_ALI_K_MOHAMAD.N.Controllers
         public ActionResult Withdraw(Transaction ts)
         {
             return View();
+            
         }
         [HttpPost]
         public ActionResult ConfirmWithdraw(Transaction ts)
@@ -65,7 +69,8 @@ namespace Assignment4_ALI_K_MOHAMAD.N.Controllers
             {
                 return Content("That was a good attempt :)");
             }
-            var acc = _context.CheckingAccounts.Single(c => c.Id == 1);
+            string username = User.Identity.GetUserId();
+            var acc = _context.CheckingAccounts.Single(c => c.ApplicationUserId == username);
             if (acc.Balance > Amount)
             {
                 acc.Balance = acc.Balance - Amount;
@@ -104,23 +109,58 @@ namespace Assignment4_ALI_K_MOHAMAD.N.Controllers
         {
             return View();
         }
-        public ActionResult ConfrimTransferMoney(Transaction ts, int To)
+        [Route("Transaction/PrintStatement")]
+        public IQueryable PrintStatement()
         {
-            var Amount = ts.Amount;
-            if (Amount <= 0)
+            var x = _context.CheckingAccounts;
+            return x;
+            
+            
+        }
+        public ActionResult ConfrimTransferMoney(Transaction ts)
+        {
+            string username = User.Identity.GetUserId();
+            var acc = _context.CheckingAccounts.Single(c => c.ApplicationUserId == username);
+            if(username == null)
             {
-                return Content(" Can't Transfer Money with a blank account)");
+                return Content("Log in first");
             }
-            var acc = _context.CheckingAccounts.Single(c => c.Id == To);
-            if (acc)
+            var destination = ts.CheckingAccountId.ToString();
+            if(acc.AccountNumber == destination)
             {
-                acc.Balance = acc.Balance + Amount;
-                _context.SaveChanges();
-                return PartialView("Done", ts);
+                return Content("You can't transfer to yourself");
+            }
+            var Amount = ts.Amount;
+            var TF = _context.CheckingAccounts.SingleOrDefault(c => c.AccountNumber == destination);
+            
+            if (TF == null)
+            {
+                return Content("Receiver does not exist");
             }
             else
             {
-                return Content("Account doesnt exists");
+                if (acc.Balance > Amount)
+                {
+                    acc.Balance = acc.Balance - Amount;
+                    TF.Balance = TF.Balance + Amount;
+                    Transaction Tsx = new Transaction()
+                    {
+                        Amount = Amount,
+                        CheckingAccount = acc,
+                        CheckingAccountId = int.Parse(TF.AccountNumber),
+                        TransactionDate = DateTime.Now,
+                        TransactionSource = acc.AccountNumber
+                    };
+
+                    _context.Transactions.Add(Tsx);
+                    _context.SaveChanges();
+                    return Content("Money transfered to account #" + destination + "You transfered : " + Amount + "$");
+                
+                }
+                else
+                {
+                    return Content("You dont have enough money ");
+                }
             }
         }
     }

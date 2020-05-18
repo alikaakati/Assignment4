@@ -23,7 +23,7 @@ namespace Assignment4_ALI_K_MOHAMAD.N
                       "~/Scripts/bootstrap.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/bootstrap.css",
+                      "~/Content/bootstrap-darkly.css",
                       "~/Content/site.css"));
         }
     }

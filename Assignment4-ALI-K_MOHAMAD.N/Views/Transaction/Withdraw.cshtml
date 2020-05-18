@@ -1,0 +1,12 @@
+﻿@model Assignment4_ALI_K_MOHAMAD.N.Models.Transaction
+@{
+    ViewBag.Title = "Withdraw";
+}
+<div id="body">
+    @using (Html.BeginForm("ConfirmWithdraw", "Transaction"))
+    {
+        <label>Amount</label>
+        @Html.TextBoxFor(m => m.Amount)
+        <button type="submit" class="btn btn-primary">Withdraw</button>
+    }
+</div>

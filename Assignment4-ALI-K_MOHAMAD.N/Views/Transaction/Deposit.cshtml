@@ -1,0 +1,13 @@
+﻿@model Assignment4_ALI_K_MOHAMAD.N.Models.Transaction
+@{
+    ViewBag.Title = "Deposit"; 
+}
+<div id="body">
+    @using (Html.BeginForm("ConfirmDeposit", "Transaction"))
+    {
+        <label>Amount</label>
+        @Html.TextBoxFor(m => m.Amount)
+        <button type="submit" class="btn btn-primary" style="display:block;">Deposit</button>
+    }
+</div>
+
